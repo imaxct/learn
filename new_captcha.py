@@ -1,4 +1,3 @@
-from captcha.image import ImageCaptcha
 import numpy as np
 import random
 from PIL import Image
@@ -43,17 +42,17 @@ def get_model():
     input_tensor = Input( (height, width, 1) )
     x = input_tensor
     #for i in range(2):
-    x = Convolution2D(32, 3, 3,activation='relu')(x)
-    x = Convolution2D(32, 3, 3,activation='relu')(x)
+    x = Convolution2D(32, (3, 3), activation='relu')(x)
+    x = Convolution2D(32, (3, 3), activation='relu')(x)
     x = MaxPooling2D( (2,2))(x)
-    x = Convolution2D(64, 3, 3,activation='relu')(x)
-    x = Convolution2D(64, 3, 3,activation='relu')(x)
+    x = Convolution2D(64, (3, 3), activation='relu')(x)
+    x = Convolution2D(64, (3, 3), activation='relu')(x)
     x = MaxPooling2D( (2,2))(x)
 
     x = Flatten()(x)
     x = Dropout(0.25)(x)
     x = [Dense(n_class, activation='softmax', name='c%d'%(i+1))(x) for i in range(n_len)]
-    model = Model(input=input_tensor, output=x)
+    model = Model(inputs=input_tensor, outputs=x)
     model.compile(
         loss='categorical_crossentropy',
         optimizer='adadelta',
@@ -76,7 +75,7 @@ def train_model(model):
 def test_model():
     model = get_model()
     model.load_weights(model_weights_path)
-    img = Image.open('/home/imaxct/code/bad_img/9999_1469952682.gif')
+    img = Image.open('/home/imaxct/Documents/learn/imgs/test2.png')
     img = np.asarray(img, dtype=np.uint8)
     img = img.reshape( (-1, height, width, 1) )
     y_pre = model.predict(img)
